@@ -1,0 +1,167 @@
+
+entity Applicant {
+	id Long,
+    cnie String,
+    residentCard String,
+    mre Boolean,
+    firstName String,
+    lastName String,
+    address String,
+    email String,
+    phoneNumber String,
+    fax String   
+}
+
+entity Request {
+	id Long,
+    number String,
+    subject String,
+    description String,
+    periodStart LocalDate,
+	periodEnd LocalDate,
+    urgent Boolean,
+    status RequestStatus
+    
+}
+
+entity RequestHistory {
+	id Long,
+	operationDate ZonedDateTime,
+    requestStatus RequestStatus,
+    user String,
+    entity String,
+    assignedTo String,
+    comment String
+    
+}
+
+entity EmergencyReason {
+	id Long,
+    code String,
+    label String,
+    type ReferenceEntityType
+}
+
+entity DepositChannel {
+	id Long,
+    code String,
+    label String,
+    type ReferenceEntityType
+}
+
+entity InfoAccessModality {
+	id Long,
+    code String,
+    label String,
+    type ReferenceEntityType
+}
+
+entity InfoSource {
+	id Long,
+    code String,
+    label String,
+    type ReferenceEntityType
+}
+
+entity RequestFate {
+	id Long,
+    code String,
+    label String,
+    type ReferenceEntityType
+}
+
+entity DissatisfactionReason {
+	id Long,
+    code String,
+    label String,
+    type ReferenceEntityType
+}
+
+// an ignored comment
+entity Entity {
+	id Long,
+	code String,
+	name String,
+	address String,
+    isFrontLine Boolean,
+    isBackLine Boolean,
+}
+
+entity User {
+	id Long,
+	email String,
+	name String,
+	matricule String,
+    isPrincipal Boolean,
+    enabled Boolean,
+}
+
+entity RequestResponse {
+	id String,
+	responseNumber String,
+	responseDate LocalDate,
+    responseNumber String,
+    remarks String
+}
+
+entity Document {
+	id Long,
+	name String,
+	url String
+}
+
+enum Language {
+    FRENCH, ENGLISH, SPANISH
+}
+
+enum RequestStatus {
+    SAVED, ASSIGNED, CLOSED
+}
+
+enum ReferenceEntityType {
+    EMERGENCY_REASON, INFO_SOURCE, INFO_ACCESS_MODALITY, DESPOSIT_CHANNEL, DISSATISFACTION_REASON, REQUEST_FATE
+}
+
+relationship OneToOne {
+    Request{applicant} to Applicant
+	Request{emeregncyReason} to EmergencyReason,
+    Request{depositChannel} to DepositChannel,
+    Request{infoAccessModality} to InfoAccessModality,
+    Request{infoSource} to InfoSource
+    Request{response} to RequestResponse
+}
+
+relationship OneToOne {
+	RequestResponse{dissatisfationReason} to DissatisfactionReason,
+    RequestResponse{requestFate} to RequestFate,
+    RequestResponse{responseMode} to InfoAccessModality,
+}
+
+relationship OneToOne {
+	RequestHistory{request} to Request
+}
+
+relationship OneToOne {
+	Entity{principal} to User
+}
+
+relationship OneToMany {
+	Entity{substitutes} to User
+}
+
+relationship OneToMany {
+	Request{documents} to Document,
+}
+
+
+// Set pagination options
+paginate * with pagination except EmergencyReason, DepositChannel, InfoAccessModality, InfoSource, Document, RequestFate, DissatisfactionReason
+
+// Use Data Transfer Objects (DTO)
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
