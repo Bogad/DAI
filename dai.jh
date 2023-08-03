@@ -1,4 +1,15 @@
 
+application {
+  config {
+    baseName dai,
+    applicationType monolith,
+    packageName ma.gov.bkam.dai,
+    authenticationType jwt,
+    prodDatabaseType postgres,
+    clientFramework angular
+  }
+  entities *
+}
 entity Applicant {
 	id Long,
     cnie String,
